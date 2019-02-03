@@ -37,7 +37,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 对于不满足【高危】和【强制】两个级别的设计，DBA 会强制打回要求修改。
 
-### 2.1.1 通用命名约定
+### 2.1.1 一般命名规则
 
 1. 【强制】使用小写，有助于提高打字速度，避免因大小写敏感而导致的错误。
 2. 【强制】没有空格，使用下划线代替。
@@ -49,7 +49,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 ### 2.1.2 库
 
-1. 【强制】遵守以上全部通用规则。
+1. 【强制】遵守以上全部一般规则。
 2. 【强制】使用单数。
 3. 【强制】尽可能避免使用前缀。
 4. 【强制】库的名称格式：业务系统名称_子系统名。
@@ -62,7 +62,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 ### 2.1.3 表
 
-1. 【强制】遵守以上全部通用规则。
+1. 【强制】遵守以上全部一般规则。
 2. 【强制】使用单数。
 3. 【强制】相关模块的表名与表名之间尽量体现 join 的关系，如 user 表和 user_login 表。
 4. 【强制】创建表时必须显式指定字符集为 utf8 或 utf8mb4。
@@ -78,7 +78,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 ### 2.1.4 字段名
 
-1. 【强制】遵守以上全部通用规则。
+1. 【强制】遵守以上全部一般规则。
 2. 【建议】尽可能选择短的和一到两个单词。
 3. 【强制】避免使用保留字作为字段名称：`order`，`date`，`name` 是数据库的保留字，避免使用它。可以为这些名称添加前缀使其易于理解，如 user_name，signup_date 等。
 4. 【强制】避免使用与表名相同的字段名，这会在编写查询时造成混淆。
@@ -176,26 +176,31 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 - 一个较为规范的建表语句为：
     ```sql
-    CREATE TABLE user (
-    `id` bigint(11) NOT NULL AUTO_INCREMENT,
-    `user_id` bigint(11) NOT NULL COMMENT '用户 ID',
-    `username` varchar(45) NOT NULL COMMENT '登录名',
-    `email` varchar(30) NOT NULL COMMENT '邮箱',
-    `nickname` varchar(45) NOT NULL COMMENT '昵称',
-    `avatar` int(11) NOT NULL COMMENT '头像',
-    `birthday` date NOT NULL COMMENT '生日',
-    `gender` tinyint(4) DEFAULT '0' COMMENT '性别',
-    `intro` varchar(150) DEFAULT NULL COMMENT '简介',
-    `resume_url` varchar(300) NOT NULL COMMENT '简历存放地址',
-    `register_ip` int NOT NULL COMMENT '用户注册时的源 IP',
-    `review_status` tinyint NOT NULL COMMENT '审核状态，1-通过，2-审核中，3-未通过，4-尚未提交审核',
-    `create_time` timestamp NOT NULL COMMENT '记录创建的时间',
-    `update_time` timestamp NOT NULL COMMENT '资料修改的时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_user_id` (`user_id`),
-    KEY `idx_username`(`username`),
-    KEY `idx_create_time`(`create_time`, `user_review_status`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = '网站用户基本信息';
+    CREATE TABLE user 
+    ( 
+        `id`            BIGINT(11) NOT NULL AUTO_INCREMENT, 
+        `user_id`       BIGINT(11) NOT NULL COMMENT '用户 ID', 
+        `username`      VARCHAR(45) NOT NULL COMMENT '登录名', 
+        `email`         VARCHAR(30) NOT NULL COMMENT '邮箱', 
+        `nickname`      VARCHAR(45) NOT NULL COMMENT '昵称', 
+        `avatar`        INT(11) NOT NULL COMMENT '头像', 
+        `birthday`      DATE NOT NULL COMMENT '生日', 
+        `gender`        TINYINT(4) DEFAULT '0' COMMENT '性别', 
+        `intro`         VARCHAR(150) DEFAULT NULL COMMENT '简介', 
+        `resume_url`    VARCHAR(300) NOT NULL COMMENT '简历存放地址', 
+        `register_ip`   INT NOT NULL COMMENT '用户注册时的源 IP', 
+        `review_status` TINYINT NOT NULL COMMENT '审核状态，1-通过，2-审核中，3-未通过，4-尚未提交审核', 
+        `create_time`   TIMESTAMP NOT NULL COMMENT '记录创建的时间', 
+        `update_time`   TIMESTAMP NOT NULL COMMENT '资料修改的时间', 
+        
+        PRIMARY KEY (`id`), 
+        UNIQUE KEY `idx_user_id` (`user_id`), 
+        KEY `idx_username`(`username`), 
+        KEY `idx_create_time`(`create_time`, `user_review_status`) 
+    ) 
+    ENGINE = INNODB 
+    DEFAULT CHARSET = UTF8 
+    COMMENT = '网站用户基本信息'; 
     ```
 
 ## 2.2 SQL 编写
