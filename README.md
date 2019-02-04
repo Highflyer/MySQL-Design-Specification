@@ -112,18 +112,18 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 * 详细存储大小参考下图：
 
-    | 类型（同义词）                                     | 存储长度(BYTES)   | 最小值（SIGNED/UNSIGNED）            | 最大值（SIGNED/UNSIGNED）|
+    | 类型（同义词）                                | 存储长度(BYTES)   | 最小值（SIGNED/UNSIGNED）            | 最大值（SIGNED/UNSIGNED）|
     |---------------------------------------------|--------|---------------------|------------------------|
-    | *整形数字*                                      |        |                     |                        |
-    | TINYINT                                     | 1      | -128/0             | 127/255               |
+    | *整形数字*                                   |        |                     |                        |
+    | TINYINT                                     | 1      | -128/0             | 127/255                 |
     | SMALLINT                                    | 2      | -32768/0           | 32767/65535           |
     | MEDIUMINT                                   | 3      | -8388608/0         | 8388607/16777215/      |
     | INT(INTEGER)                                | 4      | -2147483648/0     | 2147483647/4294967295/ |
     | BIGINT                                      | 8      |  -9223372036854775808/0|    -9223372036854775807/18446744073709551615 |
-    | *小数支持*                                      |        |                     |                        |
+    | *小数支持*                                   |        |                     |                        |
     | FLOAT[(M[,D])]                              | 4 or 8 | -                   |                        |
     | DOUBLE[(M[,D])]<br>(REAL, DOUBLE PRECISION) | 8      | -                   |                        |
-    | *时间类型*                                      |        |                     |                        |
+    | *时间类型*                                   |        |                     |                        |
     | DATETIME                                    | 8      | 1001-01-01 00:00:00 | 9999-12-31 23:59:59    |
     | DATE                                        | 3      | 1001-01-01          | 9999-12-31             |
     | TIME                                        | 3      | 00:00:00            | 23:59:59               |
@@ -141,6 +141,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 6. 【建议】在建立索引时，多考虑建立联合索引，并把区分度最高的字段放在最前面。如列 ` userid` 的区分度可由 `select count(distinct userid)` 计算出来。
 7. 【建议】在多表 join 的 SQL 里，保证被驱动表的连接列上有索引，这样 join 执行效率最高。
 8. 【建议】建表或加索引时，保证表里互相不存在冗余索引。对于 MySQL 来说，如果表里已经存在 `key(a,b)`，则 `key(a)` 为冗余索引，需要删除。
+9. 【建议】如果选择性超过 20%，那么全表扫描比使用索引性能更优，即没有设置索引的必要。
 
 ### 2.1.7 分库分表、分区表
 
@@ -196,11 +197,11 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
         PRIMARY KEY (`id`), 
         UNIQUE KEY `idx_user_id` (`user_id`), 
         KEY `idx_username`(`username`), 
-        KEY `idx_create_time`(`create_time`, `user_review_status`) 
+        KEY `idx_create_time`(`create_time`, `review_status`) 
     ) 
-    ENGINE = INNODB 
-    DEFAULT CHARSET = UTF8 
-    COMMENT = '网站用户基本信息'; 
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8 
+    COMMENT = '用户基本信息'; 
     ```
 
 ## 2.2 SQL 编写
