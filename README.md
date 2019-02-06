@@ -51,7 +51,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 1. 【强制】遵守以上全部一般规则。
 2. 【强制】使用单数。
-3. 【强制】尽可能避免使用前缀。
+3. 【强制】避免使用前缀。
 4. 【强制】库的名称格式：业务系统名称_子系统名。
 5. 【强制】一般分库名称命名格式是`库通配名_编号`，编号从 0 开始递增，比如 `tx_001`，以时间进行分库的名称格式是“库通配名_时间”。
 6. 【强制】创建数据库时必须显式指定字符集，并且字符集只能是 utf8 或者 utf8mb4。创建数据库 SQL 举例：
@@ -138,7 +138,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 3. 【强制】InnoDB 和 MyISAM 存储引擎表，索引类型必须为 `BTREE`；MEMORY 表可以根据需要选择 `HASH` 或者 `BTREE` 类型索引。
 4. 【强制】单个索引中每个索引记录的长度不能超过 64KB。
 5. 【建议】单个表上的索引个数不能超过 7 个。
-6. 【建议】在建立索引时，多考虑建立联合索引，并把区分度最高的字段放在最前面。如列 ` userid` 的区分度可由 `select count(distinct userid)` 计算出来。
+6. 【建议】在建立索引时，多考虑建立联合索引，并把区分度最高的字段放在最前面。如列 ` user_id` 的区分度可由 `select count(distinct user_id)` 计算出来。
 7. 【建议】在多表 join 的 SQL 里，保证被驱动表的连接列上有索引，这样 join 执行效率最高。
 8. 【建议】建表或加索引时，保证表里互相不存在冗余索引。对于 MySQL 来说，如果表里已经存在 `key(a,b)`，则 `key(a)` 为冗余索引，需要删除。
 9. 【建议】如果选择性超过 20%，那么全表扫描比使用索引性能更优，即没有设置索引的必要。
@@ -163,7 +163,7 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 ### 2.1.9 程序层 DAO 设计建议
 
-1. 【建议】新的代码不要用 model，推荐使用手动拼 SQL + 绑定变量传入参数的方式。因为model 虽然可以使用面向对象的方式操作 db，但是其使用不当很容易造成生成的 SQL 非常复杂，且 model 层自己做的强制类型转换性能较差，最终导致数据库性能下降。
+1. 【建议】新的代码不要用 model，推荐使用手动拼 SQL + 绑定变量传入参数的方式。因为 model 虽然可以使用面向对象的方式操作 db，但是其使用不当很容易造成生成的 SQL 非常复杂，且 model 层自己做的强制类型转换性能较差，最终导致数据库性能下降。
 2. 【建议】前端程序连接 MySQL 或者 Redis，必须要有连接超时和失败重连机制，且失败重试必须有间隔时间。
 3. 【建议】前端程序报错里尽量能够提示 MySQL 或 Redis 原生态的报错信息，便于排查错误。
 4. 【建议】对于有连接池的前端程序，必须根据业务需要配置初始、最小、最大连接数，超时时间以及连接回收机制，否则会耗尽数据库连接资源，造成线上事故。
@@ -177,67 +177,67 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
 - 一个较为规范的建表语句为：
     ```sql
-    CREATE TABLE user 
+    create table user 
     ( 
-        `id`            BIGINT(11) NOT NULL AUTO_INCREMENT, 
-        `user_id`       BIGINT(11) NOT NULL COMMENT '用户 ID', 
-        `username`      VARCHAR(45) NOT NULL COMMENT '登录名', 
-        `email`         VARCHAR(30) NOT NULL COMMENT '邮箱', 
-        `nickname`      VARCHAR(45) NOT NULL COMMENT '昵称', 
-        `avatar`        INT(11) NOT NULL COMMENT '头像', 
-        `birthday`      DATE NOT NULL COMMENT '生日', 
-        `gender`        TINYINT(4) DEFAULT '0' COMMENT '性别', 
-        `intro`         VARCHAR(150) DEFAULT NULL COMMENT '简介', 
-        `resume_url`    VARCHAR(300) NOT NULL COMMENT '简历存放地址', 
-        `register_ip`   INT NOT NULL COMMENT '用户注册时的源 IP', 
-        `review_status` TINYINT NOT NULL COMMENT '审核状态，1-通过，2-审核中，3-未通过，4-尚未提交审核', 
-        `create_time`   TIMESTAMP NOT NULL COMMENT '记录创建的时间', 
-        `update_time`   TIMESTAMP NOT NULL COMMENT '资料修改的时间', 
+        `id`            bigint(11) not null auto_increment, 
+        `user_id`       bigint(11) not null comment '用户 id', 
+        `username`      varchar(45) not null comment '登录名', 
+        `email`         varchar(30) not null comment '邮箱', 
+        `nickname`      varchar(45) not null comment '昵称', 
+        `avatar`        int(11) not null comment '头像', 
+        `birthday`      date not null comment '生日', 
+        `gender`        tinyint(4) default '0' comment '性别', 
+        `intro`         varchar(150) default null comment '简介', 
+        `resume_url`    varchar(300) not null comment '简历存放地址', 
+        `register_ip`   int not null comment '用户注册时的源 ip', 
+        `review_status` tinyint not null comment '审核状态，1-通过，2-审核中，3-未通过，4-尚未提交审核', 
+        `create_time`   timestamp not null comment '记录创建的时间', 
+        `update_time`   timestamp not null comment '资料修改的时间', 
         
-        PRIMARY KEY (`id`), 
-        UNIQUE KEY `idx_user_id` (`user_id`), 
-        KEY `idx_username`(`username`), 
-        KEY `idx_create_time`(`create_time`, `review_status`) 
+        primary key (`id`), 
+        unique key `idx_user_id` (`user_id`), 
+        key `idx_username`(`username`), 
+        key `idx_create_time`(`create_time`, `review_status`) 
     ) 
-    ENGINE = InnoDB
-    DEFAULT CHARSET = utf8 
-    COMMENT = '用户基本信息'; 
+    engine = InnoDB
+    default charset = utf8 
+    comment = '用户基本信息'; 
     ```
 
 ## 2.2 SQL 编写
 
 ### 2.2.1 DML 语句
 
-1. 【强制】SELECT 语句必须指定具体字段名称，禁止写成 `*`。因为 `select *` 会将不该读的数据也从 MySQL 里读出来，造成网卡压力。且表字段一旦更新，但model层没有来得及更新的话，系统会报错。
-2. 【强制】INSERT 语句指定具体字段名称，不要写成 `insert into t1 values(…)`，道理同上。
-3. 【建议】`insert into…values(XX),(XX),(XX)…`，这里 XX 的值不要超过 5000 个。值过多虽然上线很快，但会引起主从同步延迟。
-4. 【建议】SELECT 语句不要使用 `union`，推荐使用 `union all`，并且 `UNION` 子句个数限制在 5 个以内。因为 `union all` 不需要去重，节省数据库资源，提高性能。
-5. 【建议】IN 值列表限制在 500 以内。例如 `select… where userid in(….500个以内…)`，这么做是为了减少底层扫描，减轻数据库压力从而加速查询。
+1. 【强制】Select 语句必须指定具体字段名称，禁止写成 `*`。因为 `select *` 会将不该读的数据也从 MySQL 里读出来，造成网卡压力。且表字段一旦更新，但model层没有来得及更新的话，系统会报错。
+2. 【强制】Insert 语句指定具体字段名称，不要写成 `insert into t1 values(…)`，道理同上。
+3. 【建议】`insert into … values(xx),(xx),(xx)…`，这里 xx 的值不要超过 5000 个。值过多虽然上线很快，但会引起主从同步延迟。
+4. 【建议】Select 语句不要使用 `union`，推荐使用 `union all`，并且 `union` 子句个数限制在 5 个以内。因为 `union all` 不需要去重，节省数据库资源，提高性能。
+5. 【建议】In 值列表限制在 500 以内。例如 `select … where user_id in(…500 个以内…)`，这么做是为了减少底层扫描，减轻数据库压力从而加速查询。
 6. 【建议】事务里批量更新数据需要控制数量，进行必要的 sleep，做到少量多次。
 7. 【强制】事务涉及的表必须全部是 InnoDB 表。否则一旦失败不会全部回滚，且易造成主从库同步终端。
 8. 【强制】写入和事务发往主库，只读 SQL 发往从库。
-9. 【强制】除静态表或小表（100 行以内），DML 语句必须有 where 条件，且使用索引查找。
-10. 【强制】生产环境禁止使用 `hint`，如 `sql_no_cache`，`force index`，`ignore key`，`straight join` 等。因为 `hint` 是用来强制 SQL 按照某个执行计划来执行，但随着数据量变化我们无法保证自己当初的预判是正确的，因此我们要相信 MySQL 优化器！
-11. 【强制】`WHERE` 条件里等号左右字段类型必须一致，否则无法利用索引。
-12. 【建议】`SELECT|UPDATE|DELETE|REPLACE` 要有 WHERE 子句，且 WHERE 子句的条件必需使用索引查找。
+9. 【强制】除静态表或小表（100 行以内），dml 语句必须有 where 条件，且使用索引查找。
+10. 【强制】生产环境禁止使用 `hint`，如 `sql_no_cache`，`force index`，`ignore key`，`straight join` 等。因为 `hint` 是用来强制 sql 按照某个执行计划来执行，但随着数据量变化我们无法保证自己当初的预判是正确的，因此我们要相信 MySQL 优化器。
+11. 【强制】`where` 条件里等号左右字段类型必须一致，否则无法利用索引。
+12. 【建议】`select|update|delete|replace` 要有 where 子句，且 where 子句的条件必需使用索引查找。
 13. 【强制】生产数据库中强烈不推荐大表上发生全表扫描，但对于 100 行以下的静态表可以全表扫描。查询数据量不要超过表行数的 25%，否则不会利用索引。
-14. 【强制】WHERE 子句中禁止只使用全模糊的 LIKE 条件进行查找，必须有其它等值或范围查询条件，否则无法利用索引。
-15. 【建议】索引列不要使用函数或表达式，否则无法利用索引。如 `where length(name)='Admin'` 或 `where user_id+2=10023`。
-16. 【建议】减少使用 or 语句，可将 or 语句优化为 union，然后在各个 where 条件上建立索引。如 `where a = 1 or b = 2` 优化为 `where a = 1… union …where b = 2, key(a),key(b)`。
+14. 【强制】Where 子句中禁止只使用全模糊的 like 条件进行查找，必须有其它等值或范围查询条件，否则无法利用索引。
+15. 【建议】索引列不要使用函数或表达式，否则无法利用索引。如 `where length(name) = 'admin'` 或 `where user_id + 2 = 10023`。
+16. 【建议】减少使用 or 语句，可将 or 语句优化为 union，然后在各个 where 条件上建立索引。如 `where a = 1 or b = 2` 优化为 `where a = 1 … union … where b = 2, key(a), key(b)`。
 17. 【建议】分页查询，当 `limit` 起点较高时，可先用过滤条件进行过滤。如 `select a, b, c from t1 limit 10000, 20;` 优化为: `select a, b, c from t1 where id > 10000 limit 20;`。
 
 ### 2.2.2 多表连接
 
-1. 【强制】禁止跨db的join语句。因为这样可以减少模块间耦合，为数据库拆分奠定坚实基础。
-2. 【强制】禁止在业务的更新类SQL语句中使用join，比如update t1 join t2…。
-3. 【建议】不建议使用子查询，建议将子查询SQL拆开结合程序多次查询，或使用join来代替子查询。
-4. 【建议】线上环境，多表join不要超过3个表。
-5. 【建议】多表连接查询推荐使用别名，且SELECT列表中要用别名引用字段，数据库.表格式，如select a from db1.table1 alias1 where …。
-6. 【建议】在多表join中，尽量选取结果集较小的表作为驱动表，来join其它表。
+1. 【强制】禁止跨 DB 的 join 语句。因为这样可以减少模块间耦合，为数据库拆分奠定坚实基础。
+2. 【强制】禁止在业务的更新类 SQL 语句中使用 join，比如 `update t1 join t2 …`。
+3. 【建议】不建议使用子查询，建议将子查询 SQL 拆开结合程序多次查询，或使用 join 来代替子查询。
+4. 【建议】线上环境，多表 join 不要超过 3 个表。
+5. 【建议】多表连接查询推荐使用别名，且 select 列表中要用别名引用字段，数据库.表格式，如 `select a from db1.table1 alias1 where …`。
+6. 【建议】在多表 join 中，尽量选取结果集较小的表作为驱动表，来 join 其它表。
 
 ### 2.2.3 事务
 
-1. 【建议】事务中 `INSERT|UPDATE|DELETE|REPLACE` 语句操作的行数控制在 2000 以内，以及 WHERE 子句中 IN 列表的传参个数控制在 500 以内。
+1. 【建议】事务中 `insert|update|delete|replace` 语句操作的行数控制在 2000 以内，以及 where 子句中 in 列表的传参个数控制在 500 以内。
 2. 【建议】批量操作数据时，需要控制事务处理间隔时间，进行必要的 sleep，一般建议值 5-10 秒。
 3. 【建议】对于有 `auto_increment` 属性字段的表的插入操作，并发需要控制在 200 以内。
 4. 【强制】程序设计必须考虑“数据库事务隔离级别”带来的影响，包括脏读、不可重复读和幻读。线上建议事务隔离级别为 `repeatable-read`。
@@ -249,16 +249,16 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 ### 2.2.4 排序和分组
 
 1. 【建议】减少使用 `order by`，和业务沟通能不排序就不排序，或将排序放到程序端去做。`order by`、`group by`、`distinct` 这些语句较为耗费 CPU，数据库的 CPU 资源是极其宝贵的。
-2. 【建议】`order by`、`group by`、`distinct` 这些 SQL 尽量利用索引直接检索出排序好的数据。如 `where a=1 order by` 可以利用 `key(a, b)`。
+2. 【建议】`order by`、`group by`、`distinct` 这些 SQL 尽量利用索引直接检索出排序好的数据。如 `where a = 1 order by` 可以利用 `key(a, b)`。
 3. 【建议】包含了 `order by`、`group by`、`distinct` 这些查询的语句，where 条件过滤出来的结果集请保持在 1000 行以内，否则 SQL 会很慢。
 
 ### 2.2.5 线上禁止使用的 SQL 语句
 
-1. 【高危】禁用 `update|delete t1 … where a=XX limit XX; ` 这种带 limit 的更新语句。因为会导致主从不一致，导致数据错乱。建议加上 `order by PK`。
-2. 【高危】禁止使用关联子查询，如 `update t1 set … where name in(select name from user where…);`，效率极其低下。
+1. 【高危】禁用 `update|delete t1 … where a = XX limit XX; ` 这种带 limit 的更新语句。因为会导致主从不一致，导致数据错乱。建议加上 `order by PK`。
+2. 【高危】禁止使用关联子查询，如 `update t1 set … where name in(select name from user where …);`，效率极其低下。
 3. 【强制】禁用 `procedure`、`function`、`trigger`、`views`、`event`、外键约束。因为他们消耗数据库资源，降低数据库实例可扩展性。推荐都在程序端实现。
-4. 【强制】禁用 `insert into …on duplicate key update…` 在高并发环境下，会造成主从不一致。
-5. 【强制】禁止联表更新语句，如 `update t1, t2 where t1.id = t2.id…`。
+4. 【强制】禁用 `insert into … on duplicate key update …` 在高并发环境下，会造成主从不一致。
+5. 【强制】禁止联表更新语句，如 `update t1, t2 where t1.id = t2.id …`。
 
 ---
 
