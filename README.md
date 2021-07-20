@@ -93,8 +93,8 @@ MySQL 数据库与 Oracle、 SQL Server 等数据库相比，有其内核上的�
 
     SQL:
     ```sql
-    select inet_aton('192.168.2.12');
-    select inet_ntoa(3232236044); 
+    select inet_aton('13.107.21.200');
+    select inet_ntoa(225121736); 
     ```
     PHP:
     ```php
